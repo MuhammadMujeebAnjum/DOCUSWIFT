@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DocuSwift Pro — Free Fast PDF & Document Converters</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Alpine.js for interactive state management -->
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <!-- FontAwesome for crisp modern icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dragover { border-color: #4f46e5 !important; background-color: rgba(99, 102, 241, 0.05) !important; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen flex flex-col selection:bg-brand-500 selection:text-white" x-data="converterApp()">
+
+    <!-- Header / Navbar -->
+    <header class="sticky top-0 z-50 bg-white/85 backdrop-blur-md border-b border-slate-200 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3 cursor-pointer" @click="activeTab = 'home'">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center text-white shadow-md shadow-indigo-500/20">
+                    <i class="fa-solid fa-file-lines text-lg"></i>
+                </div>
+                <div>
+                    <span class="font-bold text-xl tracking-tight bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">DocuSwift</span>
+                    <span class="text-xs bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded-full ml-1">Pro</span>
+                </div>
+            </div>
+            
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-600">
+                <button @click="activeTab = 'home'" :class="activeTab === 'home' ? 'text-indigo-600 font-semibold' : 'hover:text-indigo-600 transition'">All Tools</button>
+                <a href="#features" class="hover:text-indigo-600 transition">Why Us</a>
+                <a href="#faq" class="hover:text-indigo-600 transition">FAQ</a>
+            </nav>
+
+            <div class="flex items-center space-x-4">
+                <div class="hidden sm:flex items-center space-x-1 text-xs text-slate-500 bg-slate-100 px-3 py-1.5 rounded-full border border-slate-200">
+                    <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+                    <span>256-Bit Secure & Private</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        
+        <!-- HOME VIEW & TOOL SELECTOR -->
+        <div x-show="activeTab === 'home'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0">
+            <!-- Hero Section -->
+            <section class="relative overflow-hidden py-16 lg:py-24 bg-gradient-to-b from-indigo-50/50 via-white to-slate-50 border-b border-slate-100">
+                <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+                <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                    <div class="inline-flex items-center space-x-2 bg-indigo-50 border border-indigo-100 text-indigo-700 px-4 py-1.5 rounded-full text-xs font-semibold mb-6 shadow-sm">
+                        <i class="fa-solid fa-bolt text-indigo-500"></i>
+                        <span>Lightning Fast Client & Cloud Processing</span>
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                        Free PDF & Document Tools <br class="hidden sm:inline">
+                        <span class="bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 bg-clip-text text-transparent">Made Simple & Fast</span>
+                    </h1>
+                    <p class="mt-6 text-lg sm:text-xl text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                        Convert, extract, and transform your documents instantly with zero friction. No registration required, 100% private and secure.
+                    </p>
+
+                    <!-- Search Quick Filter -->
+                    <div class="mt-8 max-w-md mx-auto relative">
+                        <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400"></i>
+                        <input type="text" x-model="searchQuery" placeholder="Search a tool (e.g., PDF to Word, Images, Compress)..." class="w-full pl-11 pr-4 py-3 bg-white border border-slate-300 rounded-2xl shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 text-sm transition">
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tools Grid Section -->
+            <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+                <div class="flex items-center justify-between mb-8">
+                    <h2 class="text-2xl font-bold text-slate-900 flex items-center space-x-2">
+                        <i class="fa-solid fa-toolbox text-indigo-600"></i>
+                        <span>Popular Conversion Tools</span>
+                    </h2>
+                    <span class="text-sm text-slate-500" x-text="filteredTools.length + ' tools available'"></span>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <template x-for="tool in filteredTools" :key="tool.id">
+                        <div @click="selectTool(tool.id)" class="group bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-xl hover:border-indigo-300 transition-all duration-300 cursor-pointer flex flex-col justify-between relative overflow-hidden">
+                            <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-bl-full -z-0 opacity-50 group-hover:scale-110 transition-transform"></div>
+                            
+                            <div class="relative z-10">
+                                <div :class="tool.color" class="w-12 h-12 rounded-xl flex items-center justify-center text-white text-xl shadow-md mb-4 group-hover:rotate-6 transition-transform">
+                                    <i :class="tool.icon"></i>
+                                </div>
+                                <h3 class="text-lg font-bold text-slate-900 group-hover:text-indigo-600 transition" x-text="tool.title"></h3>
+                                <p class="text-slate-500 text-sm mt-2 leading-relaxed" x-text="tool.description"></p>
+                            </div>
+
+                            <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-indigo-600 relative z-10">
+                                <span class="group-hover:translate-x-1 transition-transform">Launch Tool</span>
+                                <i class="fa-solid fa-arrow-right group-hover:translate-x-2 transition-transform"></i>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Empty state if search fails -->
+                <div x-show="filteredTools.length === 0" class="text-center py-16 bg-white rounded-2xl border border-slate-200 mt-4">
+                    <i class="fa-solid fa-face-frown text-4xl text-slate-300 mb-3"></i>
+                    <p class="text-slate-600 font-medium">No tools found matching "<span x-text="searchQuery"></span>"</p>
+                    <button @click="searchQuery = ''" class="mt-4 text-xs font-semibold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl hover:bg-indigo-100 transition">Clear Search</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- ACTIVE TOOL WORKSPACE -->
+        <div x-show="activeTab !== 'home'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-2" x-transition:enter-end="opacity-100 translate-y-0" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            
+            <!-- Breadcrumb Navigation -->
+            <div class="mb-6 flex items-center space-x-2 text-sm text-slate-500">
+                <button @click="resetTool()" class="hover:text-indigo-600 transition flex items-center space-x-1">
+                    <i class="fa-solid fa-arrow-left mr-1"></i>
+                    <span>Back to All Tools</span>
+                </button>
+                <span>/</span>
+                <span class="text-slate-800 font-semibold" x-text="currentTool?.title"></span>
+            </div>
+
+            <!-- Main Tool Container -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-xl overflow-hidden p-6 sm:p-10">
+                
+                <!-- Tool Header -->
+                <div class="flex items-center space-x-4 mb-8 pb-6 border-b border-slate-100">
+                    <div :class="currentTool?.color" class="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-2xl shadow-md">
+                        <i :class="currentTool?.icon"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900" x-text="currentTool?.title"></h1>
+                        <p class="text-slate-500 text-sm mt-1" x-text="currentTool?.description"></p>
+                    </div>
+                </div>
+
+                <!-- STEP 1: UPLOAD -->
+                <template x-if="step === 'upload'">
+                    <div>
+                        <div @dragover.prevent="$el.classList.add('dragover')" 
+                             @dragleave.prevent="$el.classList.remove('dragover')" 
+                             @drop.prevent="handleFileDrop($event)"
+                             @click="$refs.fileInput.click()"
+                             class="border-2 border-dashed border-slate-300 rounded-3xl p-8 sm:p-14 text-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/20 transition-all duration-300 group">
+                            
+                            <input type="file" x-ref="fileInput" @change="handleFileSelect($event)" :accept="currentTool?.accept" class="hidden" :multiple="currentTool?.multiple">
+
+                            <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-2xl mx-auto flex items-center justify-center text-3xl mb-6 shadow-inner group-hover:scale-110 transition-transform">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                            </div>
+
+                            <h3 class="text-lg font-bold text-slate-800">Drag & drop your files here</h3>
+                            <p class="text-slate-500 text-sm mt-1">or <span class="text-indigo-600 font-semibold underline">browse your device</span></p>
+                            <p class="text-xs text-slate-400 mt-4 uppercase tracking-wider font-medium" x-text="'Supports: ' + currentTool?.formats"></p>
+                        </div>
+
+                        <!-- Error Message Toast -->
+                        <div x-show="errorMessage" x-transition class="mt-4 p-4 bg-rose-50 border border-rose-200 text-rose-700 rounded-2xl text-sm flex items-center space-x-3">
+                            <i class="fa-solid fa-triangle-exclamation text-rose-500 text-lg"></i>
+                            <span x-text="errorMessage"></span>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- STEP 2: FILE SELECTED & OPTIONS -->
+                <template x-if="step === 'ready'">
+                    <div class="space-y-6">
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 sm:p-6 flex items-center justify-between">
+                            <div class="flex items-center space-x-4 overflow-hidden">
+                                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-bold">
+                                    <i class="fa-solid fa-file-invoice"></i>
+                                </div>
+                                <div class="truncate">
+                                    <h4 class="font-bold text-slate-800 truncate" x-text="selectedFile ? selectedFile.name : multipleFiles.length + ' files selected'"></h4>
+                                    <p class="text-xs text-slate-500 mt-0.5" x-text="selectedFile ? formatBytes(selectedFile.size) : 'Ready for processing'"></p>
+                                </div>
+                            </div>
+                            <button @click="resetTool()" class="text-slate-400 hover:text-rose-600 p-2 transition">
+                                <i class="fa-solid fa-trash-can text-lg"></i>
+                            </button>
+                        </div>
+
+                        <div class="bg-indigo-50/50 border border-indigo-100 rounded-2xl p-4 text-sm text-indigo-900 flex items-center space-x-3">
+                            <i class="fa-solid fa-circle-info text-indigo-600 text-lg flex-shrink-0"></i>
+                            <span>Your file is ready. Click the button below to initialize processing.</span>
+                        </div>
+
+                        <button @click="startConversion()" class="w-full py-4 bg-gradient-to-r from-indigo-600 to-violet-600 text-white font-bold rounded-2xl shadow-lg shadow-indigo-500/30 hover:shadow-xl hover:from-indigo-700 hover:to-violet-700 transition flex items-center justify-center space-x-2 text-lg">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span x-text="'Process to ' + currentTool?.outputFormat"></span>
+                        </button>
+                    </div>
+                </template>
+
+                <!-- STEP 3: CONVERSION PROGRESS -->
+                <template x-if="step === 'converting'">
+                    <div class="py-12 text-center space-y-6">
+                        <div class="relative w-24 h-24 mx-auto">
+                            <div class="absolute inset-0 border-4 border-indigo-100 rounded-full"></div>
+                            <div class="absolute inset-0 border-4 border-indigo-600 rounded-full animate-spin border-t-transparent"></div>
+                            <div class="absolute inset-0 flex items-center justify-center text-indigo-600 font-bold text-lg" x-text="progress + '%'"></div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-xl font-bold text-slate-900" x-text="conversionStatusText"></h3>
+                            <p class="text-sm text-slate-500 mt-2">Please keep this window open while we process your file securely.</p>
+                        </div>
+
+                        <div class="max-w-md mx-auto w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-indigo-600 to-violet-600 h-full transition-all duration-300 rounded-full" :style="'width: ' + progress + '%'"></div>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- STEP 4: SUCCESS & DOWNLOAD -->
+                <template x-if="step === 'success'">
+                    <div class="py-8 text-center space-y-6">
+                        <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full mx-auto flex items-center justify-center text-3xl shadow-md animate-bounce">
+                            <i class="fa-solid fa-check"></i>
+                        </div>
+
+                        <div>
+                            <h3 class="text-2xl font-extrabold text-slate-900">Processing Successful!</h3>
+                            <p class="text-slate-500 text-sm mt-1">Your document has been successfully processed and is ready for download.</p>
+                        </div>
+
+                        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 max-w-md mx-auto flex items-center justify-between text-left">
+                            <div class="flex items-center space-x-3 overflow-hidden">
+                                <i class="fa-solid fa-file-circle-check text-emerald-600 text-2xl flex-shrink-0"></i>
+                                <div class="truncate">
+                                    <h5 class="font-bold text-slate-800 text-sm truncate" x-text="outputFileName"></h5>
+                                    <span class="text-xs text-emerald-600 font-semibold">Ready • Secure Link</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
+                            <button @click="downloadFile()" class="w-full sm:w-auto px-8 py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-2xl shadow-lg shadow-emerald-500/20 transition flex items-center justify-center space-x-2">
+                                <i class="fa-solid fa-download"></i>
+                                <span>Download Processed File</span>
+                            </button>
+                            <button @click="resetTool()" class="w-full sm:w-auto px-6 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-2xl transition">
+                                Process Another File
+                            </button>
+                        </div>
+                    </div>
+                </template>
+
+            </div>
+
+            <!-- SEO Informational Guide Section Below Tool -->
+            <div class="mt-12 bg-white rounded-3xl border border-slate-200 p-8 shadow-sm">
+                <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center space-x-2">
+                    <i class="fa-solid fa-circle-question text-indigo-600"></i>
+                    <span x-text="'How to use ' + (currentTool?.title || 'this tool')"></span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-600">
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center mb-3">1</div>
+                        <h4 class="font-bold text-slate-800 mb-1">Upload Your File</h4>
+                        <p>Drag and drop your document into the secure upload box or click to select from your device storage.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center mb-3">2</div>
+                        <h4 class="font-bold text-slate-800 mb-1">Instant Processing</h4>
+                        <p>Our high-speed conversion engine processes your document safely while keeping your data 100% private.</p>
+                    </div>
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold flex items-center justify-center mb-3">3</div>
+                        <h4 class="font-bold text-slate-800 mb-1">Download & Go</h4>
+                        <p>Hit the download button to grab your processed file immediately. Files auto-delete after 1 hour.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- FEATURES SECTION -->
+        <section id="features" class="py-20 bg-white border-t border-slate-200" x-show="activeTab === 'home'">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-3xl mx-auto mb-16">
+                    <h2 class="text-3xl font-extrabold text-slate-900">Why Millions Trust DocuSwift Pro</h2>
+                    <p class="text-slate-600 mt-3 text-lg">Built for speed, uncompromising security, and professional results.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-indigo-600 text-white rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md">
+                            <i class="fa-solid fa-lock"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">100% Secure & Private</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">We use advanced TLS encryption during transmission. All uploaded files are permanently deleted from our servers automatically within 1 hour.</p>
+                    </div>
+
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-violet-600 text-white rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md">
+                            <i class="fa-solid fa-bolt-lightning"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Lightning Fast Speed</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">Optimized cloud workers and browser-side WebAssembly algorithms ensure your conversions complete in seconds, not minutes.</p>
+                    </div>
+
+                    <div class="p-8 rounded-3xl bg-slate-50 border border-slate-100 hover:shadow-lg transition">
+                        <div class="w-14 h-14 bg-emerald-600 text-white rounded-2xl flex items-center justify-center text-2xl mb-6 shadow-md">
+                            <i class="fa-solid fa-mobile-screen-button"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-2">Works on All Devices</h3>
+                        <p class="text-slate-600 leading-relaxed text-sm">No software or plugins to install. DocuSwift Pro runs entirely in your web browser across desktop, tablet, and mobile devices.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ SECTION -->
+        <section id="faq" class="py-20 bg-slate-50 border-t border-slate-200" x-show="activeTab === 'home'">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl font-extrabold text-slate-900">Frequently Asked Questions</h2>
+                    <p class="text-slate-600 mt-2">Got questions about our document converters? We've got answers.</p>
+                </div>
+
+                <div class="space-y-4" x-data="{ openFaq: null }">
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <button @click="openFaq = openFaq === 1 ? null : 1" class="w-full p-6 text-left font-bold text-slate-800 flex justify-between items-center">
+                            <span>Are these conversion tools completely free?</span>
+                            <i class="fa-solid fa-chevron-down transition-transform" :class="openFaq === 1 ? 'rotate-180' : ''"></i>
+                        </button>
+                        <div x-show="openFaq === 1" x-collapse class="px-6 pb-6 text-slate-600 text-sm leading-relaxed">
+                            Yes! All core document conversion tools on DocuSwift Pro are 100% free with no hidden subscriptions or watermarks.
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <button @click="openFaq = openFaq === 2 ? null : 2" class="w-full p-6 text-left font-bold text-slate-800 flex justify-between items-center">
+                            <span>Are my uploaded documents safe?</span>
+                            <i class="fa-solid fa-chevron-down transition-transform" :class="openFaq === 2 ? 'rotate-180' : ''"></i>
+                        </button>
+                        <div x-show="openFaq === 2" x-collapse class="px-6 pb-6 text-slate-600 text-sm leading-relaxed">
+                            Absolutely. Your files are encrypted during transfer and automatically wiped from our cloud storage servers within 60 minutes. We never view or share your documents.
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
+                        <button @click="openFaq = openFaq === 3 ? null : 3" class="w-full p-6 text-left font-bold text-slate-800 flex justify-between items-center">
+                            <span>Do I need to install any software?</span>
+                            <i class="fa-solid fa-chevron-down transition-transform" :class="openFaq === 3 ? 'rotate-180' : ''"></i>
+                        </button>
+                        <div x-show="openFaq === 3" x-collapse class="px-6 pb-6 text-slate-600 text-sm leading-relaxed">
+                            No installation needed! DocuSwift Pro is a web-based platform that operates directly in Chrome, Safari, Firefox, or Edge.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white font-bold">
+                    <i class="fa-solid fa-file-lines text-sm"></i>
+                </div>
+                <span class="text-white font-bold text-lg">DocuSwift Pro</span>
+            </div>
+            <p class="text-xs text-slate-500">© 2026 DocuSwift Pro. All rights reserved. Built for high-speed document workflows.</p>
+            <div class="flex space-x-4 text-sm">
+                <a href="#" class="hover:text-white transition">Privacy</a>
+                <a href="#" class="hover:text-white transition">Terms</a>
+                <a href="#" class="hover:text-white transition">Contact</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Frontend Alpine.js Script -->
+    <script>
+        function converterApp() {
+            return {
+                activeTab: 'home',
+                searchQuery: '',
+                step: 'upload', 
+                selectedFile: null,
+                multipleFiles: [],
+                errorMessage: '',
+                progress: 0,
+                conversionStatusText: 'Initializing file processor...',
+                outputFileName: 'converted_document.docx',
+                downloadUrl: null,
+
+                tools: [
+                    { id: 'pdf-to-word', title: 'PDF to Word', description: 'Convert PDF documents into editable Word .docx files instantly.', icon: 'fa-solid fa-file-word', color: 'bg-blue-600', accept: '.pdf', formats: 'PDF', multiple: false, outputFormat: 'Word (.docx)', outputExt: '.docx', endpoint: '/convert-pdf-to-word' },
+                    { id: 'word-to-pdf', title: 'Word to PDF', description: 'Transform Word documents into professional, secure PDF files.', icon: 'fa-solid fa-file-pdf', color: 'bg-indigo-600', accept: '.doc,.docx', formats: 'DOC, DOCX', multiple: false, outputFormat: 'PDF', outputExt: '.pdf', endpoint: '/word-to-pdf' },
+                    { id: 'pdf-to-images', title: 'PDF to Images', description: 'Extract every page of your PDF into high-quality PNG images inside a ZIP file.', icon: 'fa-solid fa-file-image', color: 'bg-violet-600', accept: '.pdf', formats: 'PDF', multiple: false, outputFormat: 'ZIP Archive', outputExt: '.zip', endpoint: '/pdf-to-images' },
+                    { id: 'image-to-pdf', title: 'Image to PDF', description: 'Combine JPG, PNG, or WebP images into a single clean PDF document.', icon: 'fa-solid fa-images', color: 'bg-emerald-600', accept: 'image/*', formats: 'JPG, PNG, WEBP', multiple: true, outputFormat: 'PDF', outputExt: '.pdf', endpoint: '/image-to-pdf' },
+                    { id: 'compress-pdf', title: 'Compress PDF', description: 'Reduce PDF file size while preserving high visual quality.', icon: 'fa-solid fa-compress', color: 'bg-rose-600', accept: '.pdf', formats: 'PDF', multiple: false, outputFormat: 'Compressed PDF', outputExt: '.pdf', endpoint: '/compress-pdf' }
+                ],
+
+                get currentTool() {
+                    return this.tools.find(t => t.id === this.activeTab) || null;
+                },
+
+                get filteredTools() {
+                    if (!this.searchQuery) return this.tools;
+                    const q = this.searchQuery.toLowerCase();
+                    return this.tools.filter(t => t.title.toLowerCase().includes(q) || t.description.toLowerCase().includes(q) || t.formats.toLowerCase().includes(q));
+                },
+
+                selectTool(id) {
+                    this.activeTab = id;
+                    this.resetToolState();
+                },
+
+                resetTool() {
+                    this.activeTab = 'home';
+                    this.resetToolState();
+                },
+
+                resetToolState() {
+                    this.step = 'upload';
+                    this.selectedFile = null;
+                    this.multipleFiles = [];
+                    this.errorMessage = '';
+                    this.progress = 0;
+                    this.downloadUrl = null;
+                },
+
+                handleFileSelect(event) {
+                    const files = event.target.files;
+                    if (files.length > 0) {
+                        this.processFiles(files);
+                    }
+                },
+
+                handleFileDrop(event) {
+                    event.currentTarget.classList.remove('dragover');
+                    const files = event.dataTransfer.files;
+                    if (files.length > 0) {
+                        this.processFiles(files);
+                    }
+                },
+
+                processFiles(files) {
+                    this.errorMessage = '';
+                    const tool = this.currentTool;
+
+                    if (!tool.multiple && files.length > 1) {
+                        this.errorMessage = 'Please select only one file for this tool.';
+                        return;
+                    }
+
+                    if (tool.multiple) {
+                        this.multipleFiles = Array.from(files);
+                        this.outputFileName = 'converted_images' + tool.outputExt;
+                    } else {
+                        this.selectedFile = files[0];
+                        const baseName = this.selectedFile.name.substring(0, this.selectedFile.name.lastIndexOf('.')) || this.selectedFile.name;
+                        this.outputFileName = baseName + tool.outputExt;
+                    }
+
+                    this.step = 'ready';
+                },
+
+                async startConversion() {
+                    const tool = this.currentTool;
+                    this.step = 'converting';
+                    this.progress = 30;
+                    this.conversionStatusText = 'Sending files to local backend server...';
+
+                    const formData = new FormData();
+                    if (tool.multiple) {
+                        this.multipleFiles.forEach(file => formData.append('files', file));
+                    } else {
+                        formData.append('file', this.selectedFile);
+                    }
+
+                    try {
+                        this.progress = 60;
+                        this.conversionStatusText = 'Processing document via Python backend...';
+
+                        const response = await fetch(`http://127.0.0.1:5000${tool.endpoint}`, {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Server processing failed.');
+                        }
+
+                        this.progress = 90;
+                        this.conversionStatusText = 'Preparing your file for download...';
+
+                        const blob = await response.blob();
+                        this.downloadUrl = window.URL.createObjectURL(blob);
+                        this.progress = 100;
+
+                        setTimeout(() => {
+                            this.step = 'success';
+                        }, 400);
+
+                    } catch (error) {
+                        this.errorMessage = 'Error: ' + error.message;
+                        this.step = 'ready';
+                    }
+                },
+
+                downloadFile() {
+                    if (this.downloadUrl) {
+                        const a = document.createElement('a');
+                        a.href = this.downloadUrl;
+                        a.download = this.outputFileName;
+                        document.body.appendChild(a);
+                        a.click();
+                        a.remove();
+                    }
+                },
+
+                formatBytes(bytes, decimals = 2) {
+                    if (bytes === 0) return '0 Bytes';
+                    const k = 1024;
+                    const dm = decimals < 0 ? 0 : decimals;
+                    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                    const i = Math.floor(Math.log(bytes) / Math.log(k));
+                    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+                }
+            }
+        }
+    </script>
+</body>
+</html>
